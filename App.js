@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,244 @@ import {
 
 const { width } = Dimensions.get("window");
 
+// Translations
+const translations = {
+  en: {
+    nav: {
+      home: "Home",
+      cakes: "Our Cakes",
+      order: "How to Order",
+      contact: "Contact",
+    },
+    hero: {
+      subtitle: "Artisan cakes crafted with love and passion",
+      description:
+        "Every cake tells a story. Let us create yours with the finest ingredients and artistic flair that makes each celebration unforgettable.",
+    },
+    cakes: {
+      title: "Our Creations",
+      items: [
+        {
+          name: "Classic Vanilla Dream",
+          description: "Light and fluffy vanilla sponge with silky buttercream frosting",
+          price: "$45",
+        },
+        {
+          name: "Chocolate Paradise",
+          description: "Rich dark chocolate layers with ganache and chocolate shavings",
+          price: "$55",
+        },
+        {
+          name: "Strawberry Bliss",
+          description: "Fresh strawberries with cream cheese frosting on vanilla base",
+          price: "$50",
+        },
+        {
+          name: "Caramel Delight",
+          description: "Salted caramel drizzle over moist caramel cake layers",
+          price: "$52",
+        },
+        {
+          name: "Lemon Zest",
+          description: "Tangy lemon curd filling with light meringue frosting",
+          price: "$48",
+        },
+        {
+          name: "Red Velvet Romance",
+          description: "Classic red velvet with cream cheese frosting and white chocolate",
+          price: "$58",
+        },
+      ],
+    },
+    order: {
+      title: "How to Order",
+      steps: [
+        {
+          title: "Choose Your Cake",
+          description:
+            "Browse our selection and pick your favorite flavor and design, or let us create something custom just for you.",
+        },
+        {
+          title: "Contact Us",
+          description:
+            "Reach out via phone, email, or Instagram to discuss your order details, size, and any special requests.",
+        },
+        {
+          title: "Confirm & Pay",
+          description:
+            "We'll send you a quote. A 50% deposit secures your order, with the balance due on pickup.",
+        },
+        {
+          title: "Enjoy!",
+          description:
+            "Pick up your cake or have it delivered. Get ready to celebrate with a delicious masterpiece!",
+        },
+      ],
+      button: "Get in Touch",
+    },
+    footer: {
+      tagline: "Made with love in every layer",
+      copyright: "© 2026 Crema Flora. All rights reserved.",
+    },
+  },
+  hy: {
+    nav: {
+      home: "Գլխավոր",
+      cakes: "Մեր Տորթերը",
+      order: "Ինչպես Պատվիրել",
+      contact: "Կապ",
+    },
+    hero: {
+      subtitle: "Արհեստավարական տորթեր՝ պատրաստված սիրով և կրքով",
+      description:
+        "Յուրաքանչյур տորթ պատմություն ունի։ Թույլ տվեք մեզ ստեղծել ձերը լավագույն բաղադրիչներով և արվեստագիտական ոճով, որը յուրաքանչյուր տոնակատարությունը դարձնում է անմոռանալի։",
+    },
+    cakes: {
+      title: "Մեր Ստեղծագործությունները",
+      items: [
+        {
+          name: "Դասական Վանիլային Երազանք",
+          description: "Թեթև և փափուկ վանիլային բիսկվիտ՝ մետաքսային կարագի կրեմով",
+          price: "$45",
+        },
+        {
+          name: "Շոկոլադե Դրախտ",
+          description: "Հարուստ մուգ շոկոլադե շերտեր՝ գանաշով և շոկոլադե սայրուկներով",
+          price: "$55",
+        },
+        {
+          name: "Ելակային Երանություն",
+          description: "Թարմ ելակներ՝ քրեմ-պանրի կրեմով վանիլային բազայի վրա",
+          price: "$50",
+        },
+        {
+          name: "Կարամելային Հաճույք",
+          description: "Աղի կարամելային մրգախառնուրդ՝ խոնավ կարամելային շերտերի վրա",
+          price: "$52",
+        },
+        {
+          name: "Լիմոնի Համ",
+          description: "Թթու լիմոնի կրեմ՝ թեթև բեզեի կրեմով",
+          price: "$48",
+        },
+        {
+          name: "Կարմիր Թավշյա Ռոմանտիկա",
+          description: "Դասական կարմիր թավշ՝ քրեմ-պանրի կրեմով և սպիտակ շոկոլադով",
+          price: "$58",
+        },
+      ],
+    },
+    order: {
+      title: "Ինչպես Պատվիրել",
+      steps: [
+        {
+          title: "Ընտրեք Ձեր Տորթը",
+          description:
+            "Զննեք մեր տեսականին և ընտրեք ձեր սիրելի համը և դիզայնը, կամ թույլ տվեք մեզ ստեղծել հատուկ ձեզ համար։",
+        },
+        {
+          title: "Կապվեք Մեզ Հետ",
+          description:
+            "Կապվեք հեռախոսով, էլփոստով կամ Instagram-ի միջոցով՝ քննարկելու ձեր պատվերի մանրամասները, չափսը և հատուկ պահանջները։",
+        },
+        {
+          title: "Հաստատեք և Վճարեք",
+          description:
+            "Մենք կուղարկենք ձեզ գնահատական։ 50% կանխավճարը ապահովում է ձեր պատվերը, մնացածը վճարվում է վերցնելիս։",
+        },
+        {
+          title: "Վայելեք!",
+          description:
+            "Վերցրեք ձեր տորթը կամ պատվիրեք առաքում։ Պատրաստվեք տոնել համեղ գլուխգործոցով!",
+        },
+      ],
+      button: "Կապվել",
+    },
+    footer: {
+      tagline: "Պատրաստված սիրով յուրաքանչյուր շերտում",
+      copyright: "© 2026 Քրեմա Ֆլորա։ Բոլոր իրավունքները պաշտպանված են։",
+    },
+  },
+  ru: {
+    nav: {
+      home: "Главная",
+      cakes: "Наши Торты",
+      order: "Как Заказать",
+      contact: "Контакты",
+    },
+    hero: {
+      subtitle: "Авторские торты, созданные с любовью и страстью",
+      description:
+        "Каждый торт рассказывает историю. Позвольте нам создать вашу с лучшими ингредиентами и художественным чутьем, которые сделают каждое празднование незабываемым.",
+    },
+    cakes: {
+      title: "Наши Творения",
+      items: [
+        {
+          name: "Классическая Ванильная Мечта",
+          description: "Легкий и пушистый ванильный бисквит с шелковистым масляным кремом",
+          price: "$45",
+        },
+        {
+          name: "Шоколадный Рай",
+          description: "Насыщенные слои темного шоколада с ганашем и шоколадной стружкой",
+          price: "$55",
+        },
+        {
+          name: "Клубничное Блаженство",
+          description: "Свежая клубника со сливочно-сырным кремом на ванильной основе",
+          price: "$50",
+        },
+        {
+          name: "Карамельное Наслаждение",
+          description: "Соленая карамель на влажных карамельных коржах",
+          price: "$52",
+        },
+        {
+          name: "Лимонная Свежесть",
+          description: "Терпкий лимонный крем с легкой меренгой",
+          price: "$48",
+        },
+        {
+          name: "Романтика Красного Бархата",
+          description: "Классический красный бархат со сливочно-сырным кремом и белым шоколадом",
+          price: "$58",
+        },
+      ],
+    },
+    order: {
+      title: "Как Заказать",
+      steps: [
+        {
+          title: "Выберите Торт",
+          description:
+            "Просмотрите наш ассортимент и выберите любимый вкус и дизайн, или позвольте нам создать что-то индивидуальное для вас.",
+        },
+        {
+          title: "Свяжитесь с Нами",
+          description:
+            "Свяжитесь по телефону, электронной почте или Instagram, чтобы обсудить детали заказа, размер и особые пожелания.",
+        },
+        {
+          title: "Подтвердите и Оплатите",
+          description:
+            "Мы вышлем вам расчет. Предоплата 50% гарантирует ваш заказ, остаток оплачивается при получении.",
+        },
+        {
+          title: "Наслаждайтесь!",
+          description:
+            "Заберите торт или закажите доставку. Готовьтесь праздновать с восхитительным шедевром!",
+        },
+      ],
+      button: "Связаться",
+    },
+    footer: {
+      tagline: "Сделано с любовью в каждом слое",
+      copyright: "© 2026 Крема Флора. Все права защищены.",
+    },
+  },
+};
+
 // Brand Colors from logo
 const COLORS = {
   teal: "#2A6B6B",
@@ -24,6 +262,182 @@ const COLORS = {
 
 // Logo image
 const logoImage = require("./assets/logo.png");
+
+// Language Switcher Component
+const LanguageSwitcher = ({ currentLang, onLanguageChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const languages = [
+    { code: "en", label: "EN", flag: "🇬🇧" },
+    { code: "hy", label: "ՀՅ", flag: "🇦🇲" },
+    { code: "ru", label: "РУ", flag: "🇷🇺" },
+  ];
+
+  const currentLanguage = languages.find((lang) => lang.code === currentLang);
+
+  const handlePress = (langCode) => {
+    onLanguageChange(langCode);
+    setIsOpen(false);
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.9,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  return (
+    <View style={styles.languageSwitcher}>
+      <TouchableOpacity
+        style={styles.languageButton}
+        onPress={() => setIsOpen(!isOpen)}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.languageFlag}>{currentLanguage.flag}</Text>
+        <Text style={styles.languageLabel}>{currentLanguage.label}</Text>
+        <Text style={styles.languageArrow}>{isOpen ? "▲" : "▼"}</Text>
+      </TouchableOpacity>
+
+      {isOpen && (
+        <View style={styles.languageDropdown}>
+          {languages.map((lang) => (
+            <TouchableOpacity
+              key={lang.code}
+              style={[
+                styles.languageOption,
+                lang.code === currentLang && styles.languageOptionActive,
+              ]}
+              onPress={() => handlePress(lang.code)}
+            >
+              <Text style={styles.languageFlag}>{lang.flag}</Text>
+              <Text
+                style={[
+                  styles.languageOptionLabel,
+                  lang.code === currentLang && styles.languageOptionLabelActive,
+                ]}
+              >
+                {lang.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+// Header Component
+const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const t = translations[currentLang];
+
+  const headerBg = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: ["rgba(255, 249, 240, 0)", "rgba(255, 249, 240, 0.98)"],
+    extrapolate: "clamp",
+  });
+
+  const headerShadow = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 0.15],
+    extrapolate: "clamp",
+  });
+
+  const menuItems = [
+    { key: "home", label: t.nav.home },
+    { key: "cakes", label: t.nav.cakes },
+    { key: "order", label: t.nav.order },
+  ];
+
+  return (
+    <Animated.View
+      style={[
+        styles.header,
+        {
+          backgroundColor: headerBg,
+          ...Platform.select({
+            web: {
+              boxShadow: headerShadow.interpolate({
+                inputRange: [0, 1],
+                outputRange: [
+                  "0 0 0 rgba(42, 107, 107, 0)",
+                  "0 2px 20px rgba(42, 107, 107, 0.15)",
+                ],
+              }),
+            },
+            default: {
+              shadowColor: COLORS.teal,
+              shadowOpacity: headerShadow,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 10,
+              elevation: headerShadow.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 5],
+              }),
+            },
+          }),
+        },
+      ]}
+    >
+      <View style={styles.headerContent}>
+        <TouchableOpacity onPress={() => onNavigate("home")}>
+          <Text style={styles.headerLogo}>Crema Flora</Text>
+        </TouchableOpacity>
+
+        {width > 768 ? (
+          <View style={styles.headerNav}>
+            {menuItems.map((item) => (
+              <TouchableOpacity
+                key={item.key}
+                style={styles.navItem}
+                onPress={() => onNavigate(item.key)}
+              >
+                <Text style={styles.navText}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <Text style={styles.menuIcon}>{isMenuOpen ? "✕" : "☰"}</Text>
+          </TouchableOpacity>
+        )}
+
+        <LanguageSwitcher
+          currentLang={currentLang}
+          onLanguageChange={onLanguageChange}
+        />
+      </View>
+
+      {isMenuOpen && width <= 768 && (
+        <View style={styles.mobileMenu}>
+          {menuItems.map((item) => (
+            <TouchableOpacity
+              key={item.key}
+              style={styles.mobileMenuItem}
+              onPress={() => {
+                onNavigate(item.key);
+                setIsMenuOpen(false);
+              }}
+            >
+              <Text style={styles.mobileMenuText}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </Animated.View>
+  );
+};
 
 // Animated Floating Component
 const FloatingElement = ({ children, delay = 0, duration = 3000 }) => {
@@ -144,42 +558,17 @@ const OrderStep = ({ number, title, description, delay }) => (
   </FadeIn>
 );
 
-// Sample cake data
-const cakes = [
-  {
-    name: "Classic Vanilla Dream",
-    description: "Light and fluffy vanilla sponge with silky buttercream frosting",
-    price: "$45",
-  },
-  {
-    name: "Chocolate Paradise",
-    description: "Rich dark chocolate layers with ganache and chocolate shavings",
-    price: "$55",
-  },
-  {
-    name: "Strawberry Bliss",
-    description: "Fresh strawberries with cream cheese frosting on vanilla base",
-    price: "$50",
-  },
-  {
-    name: "Caramel Delight",
-    description: "Salted caramel drizzle over moist caramel cake layers",
-    price: "$52",
-  },
-  {
-    name: "Lemon Zest",
-    description: "Tangy lemon curd filling with light meringue frosting",
-    price: "$48",
-  },
-  {
-    name: "Red Velvet Romance",
-    description: "Classic red velvet with cream cheese frosting and white chocolate",
-    price: "$58",
-  },
-];
-
 export default function App() {
+  const [language, setLanguage] = useState("en");
   const scrollY = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef(null);
+  const sectionRefs = useRef({
+    home: null,
+    cakes: null,
+    order: null,
+  });
+
+  const t = translations[language];
 
   const heroTranslateY = scrollY.interpolate({
     inputRange: [0, 300],
@@ -193,9 +582,31 @@ export default function App() {
     extrapolate: "clamp",
   });
 
+  const handleNavigate = (section) => {
+    if (section === "home") {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+    } else if (sectionRefs.current[section]) {
+      sectionRefs.current[section].measureLayout(
+        scrollViewRef.current,
+        (x, y) => {
+          scrollViewRef.current?.scrollTo({ y: y - 80, animated: true });
+        },
+        () => {}
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <Header
+        onNavigate={handleNavigate}
+        currentLang={language}
+        onLanguageChange={setLanguage}
+        scrollY={scrollY}
+      />
+
       <Animated.ScrollView
+        ref={scrollViewRef}
         style={styles.scrollView}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -205,6 +616,7 @@ export default function App() {
       >
         {/* Hero Section */}
         <Animated.View
+          ref={(ref) => (sectionRefs.current.home = ref)}
           style={[
             styles.heroSection,
             {
@@ -222,9 +634,7 @@ export default function App() {
           </FloatingElement>
 
           <FadeIn delay={700}>
-            <Text style={styles.heroSubtitle}>
-              Artisan cakes crafted with love and passion
-            </Text>
+            <Text style={styles.heroSubtitle}>{t.hero.subtitle}</Text>
           </FadeIn>
 
           <FadeIn delay={900}>
@@ -232,32 +642,42 @@ export default function App() {
           </FadeIn>
 
           <FadeIn delay={1100}>
-            <Text style={styles.heroDescription}>
-              Every cake tells a story. Let us create yours with the finest
-              ingredients and artistic flair that makes each celebration
-              unforgettable.
-            </Text>
+            <Text style={styles.heroDescription}>{t.hero.description}</Text>
           </FadeIn>
 
           <View style={styles.decorativeElements}>
             <FloatingElement delay={200} duration={3500}>
-              <View style={[styles.decorativeCircle, { backgroundColor: COLORS.yellow }]} />
+              <View
+                style={[
+                  styles.decorativeCircle,
+                  { backgroundColor: COLORS.yellow },
+                ]}
+              />
             </FloatingElement>
             <FloatingElement delay={400} duration={4500}>
-              <View style={[styles.decorativeCircle, styles.circleRight, { backgroundColor: COLORS.orange }]} />
+              <View
+                style={[
+                  styles.decorativeCircle,
+                  styles.circleRight,
+                  { backgroundColor: COLORS.orange },
+                ]}
+              />
             </FloatingElement>
           </View>
         </Animated.View>
 
         {/* Cakes Section */}
-        <View style={styles.cakesSection}>
+        <View
+          ref={(ref) => (sectionRefs.current.cakes = ref)}
+          style={styles.cakesSection}
+        >
           <FadeIn delay={200}>
-            <Text style={styles.sectionTitle}>Our Creations</Text>
+            <Text style={styles.sectionTitle}>{t.cakes.title}</Text>
             <View style={styles.sectionDivider} />
           </FadeIn>
 
           <View style={styles.cakesGrid}>
-            {cakes.map((cake, index) => (
+            {t.cakes.items.map((cake, index) => (
               <CakeCard
                 key={index}
                 name={cake.name}
@@ -270,42 +690,32 @@ export default function App() {
         </View>
 
         {/* How to Order Section */}
-        <View style={styles.orderSection}>
+        <View
+          ref={(ref) => (sectionRefs.current.order = ref)}
+          style={styles.orderSection}
+        >
           <FadeIn delay={200}>
-            <Text style={styles.sectionTitle}>How to Order</Text>
-            <View style={[styles.sectionDivider, { backgroundColor: COLORS.white }]} />
+            <Text style={styles.sectionTitle}>{t.order.title}</Text>
+            <View
+              style={[styles.sectionDivider, { backgroundColor: COLORS.white }]}
+            />
           </FadeIn>
 
           <View style={styles.orderSteps}>
-            <OrderStep
-              number="1"
-              title="Choose Your Cake"
-              description="Browse our selection and pick your favorite flavor and design, or let us create something custom just for you."
-              delay={300}
-            />
-            <OrderStep
-              number="2"
-              title="Contact Us"
-              description="Reach out via phone, email, or Instagram to discuss your order details, size, and any special requests."
-              delay={450}
-            />
-            <OrderStep
-              number="3"
-              title="Confirm & Pay"
-              description="We'll send you a quote. A 50% deposit secures your order, with the balance due on pickup."
-              delay={600}
-            />
-            <OrderStep
-              number="4"
-              title="Enjoy!"
-              description="Pick up your cake or have it delivered. Get ready to celebrate with a delicious masterpiece!"
-              delay={750}
-            />
+            {t.order.steps.map((step, index) => (
+              <OrderStep
+                key={index}
+                number={String(index + 1)}
+                title={step.title}
+                description={step.description}
+                delay={300 + index * 150}
+              />
+            ))}
           </View>
 
           <FadeIn delay={900}>
             <TouchableOpacity style={styles.contactButton}>
-              <Text style={styles.contactButtonText}>Get in Touch</Text>
+              <Text style={styles.contactButtonText}>{t.order.button}</Text>
             </TouchableOpacity>
           </FadeIn>
         </View>
@@ -318,8 +728,8 @@ export default function App() {
             resizeMode="contain"
           />
           <View style={styles.footerDivider} />
-          <Text style={styles.footerText}>Made with love in every layer</Text>
-          <Text style={styles.footerCopyright}>© 2026 Crema Flora. All rights reserved.</Text>
+          <Text style={styles.footerText}>{t.footer.tagline}</Text>
+          <Text style={styles.footerCopyright}>{t.footer.copyright}</Text>
         </View>
       </Animated.ScrollView>
     </View>
@@ -333,6 +743,146 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  // Header Styles
+  header: {
+    position: Platform.OS === "web" ? "fixed" : "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    paddingTop: Platform.OS === "web" ? 0 : 50,
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+  },
+  headerLogo: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: COLORS.teal,
+    letterSpacing: 1,
+  },
+  headerNav: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 30,
+  },
+  navItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+  },
+  navText: {
+    fontSize: 16,
+    color: COLORS.teal,
+    fontWeight: "500",
+    letterSpacing: 0.5,
+  },
+  menuButton: {
+    padding: 10,
+  },
+  menuIcon: {
+    fontSize: 24,
+    color: COLORS.teal,
+  },
+  mobileMenu: {
+    backgroundColor: COLORS.cream,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.teal + "20",
+  },
+  mobileMenuItem: {
+    paddingVertical: 15,
+  },
+  mobileMenuText: {
+    fontSize: 16,
+    color: COLORS.teal,
+    fontWeight: "500",
+  },
+  // Language Switcher Styles
+  languageSwitcher: {
+    position: "relative",
+    zIndex: 2000,
+  },
+  languageButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.teal,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 25,
+    gap: 6,
+    ...Platform.select({
+      web: {
+        boxShadow: "0 2px 10px rgba(42, 107, 107, 0.2)",
+      },
+      default: {
+        shadowColor: COLORS.teal,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 3,
+      },
+    }),
+  },
+  languageFlag: {
+    fontSize: 18,
+  },
+  languageLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: COLORS.white,
+    letterSpacing: 0.5,
+  },
+  languageArrow: {
+    fontSize: 10,
+    color: COLORS.white,
+  },
+  languageDropdown: {
+    position: "absolute",
+    top: 50,
+    right: 0,
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    overflow: "hidden",
+    minWidth: 120,
+    ...Platform.select({
+      web: {
+        boxShadow: "0 4px 20px rgba(42, 107, 107, 0.25)",
+      },
+      default: {
+        shadowColor: COLORS.teal,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+        elevation: 8,
+      },
+    }),
+  },
+  languageOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.teal + "10",
+  },
+  languageOptionActive: {
+    backgroundColor: COLORS.teal + "10",
+  },
+  languageOptionLabel: {
+    fontSize: 14,
+    color: COLORS.teal,
+    fontWeight: "500",
+  },
+  languageOptionLabelActive: {
+    fontWeight: "700",
+    color: COLORS.teal,
   },
   heroLogo: {
     width: 300,
