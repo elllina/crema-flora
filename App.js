@@ -25,14 +25,14 @@ const COLORS = {
 // Logo image
 const logoImage = require("./assets/logo.png");
 
-// Cake images
+// Cake images (optimized WebP format)
 const cakeImages = {
-  vanilla: require("./assets/cakes/stardart-busquite.png"),
-  chocolate: require("./assets/cakes/cocoa.png"),
-  strawberry: require("./assets/cakes/mac-strawberry.png"),
-  caramel: require("./assets/cakes/nejnost.png"),
-  lemon: require("./assets/cakes/limon.png"),
-  redVelvet: require("./assets/cakes/red-welwet.png"),
+  vanilla: require("./assets/cakes/stardart-busquite.webp"),
+  chocolate: require("./assets/cakes/cocoa.webp"),
+  strawberry: require("./assets/cakes/mac-strawberry.webp"),
+  caramel: require("./assets/cakes/nejnost.webp"),
+  lemon: require("./assets/cakes/limon.webp"),
+  redVelvet: require("./assets/cakes/red-welwet.webp"),
 };
 
 // Translations
