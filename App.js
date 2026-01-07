@@ -13,6 +13,28 @@ import {
 
 const { width } = Dimensions.get("window");
 
+// Brand Colors from logo
+const COLORS = {
+  teal: "#2A6B6B",
+  orange: "#E86A33",
+  yellow: "#F5C542",
+  cream: "#FFF9F0",
+  white: "#FFFFFF",
+};
+
+// Logo image
+const logoImage = require("./assets/logo.png");
+
+// Cake images
+const cakeImages = {
+  vanilla: require("./assets/cakes/stardart-busquite.png"),
+  chocolate: require("./assets/cakes/cocoa.png"),
+  strawberry: require("./assets/cakes/mac-strawberry.png"),
+  caramel: require("./assets/cakes/nejnost.png"),
+  lemon: require("./assets/cakes/limon.png"),
+  redVelvet: require("./assets/cakes/red-welwet.png"),
+};
+
 // Translations
 const translations = {
   en: {
@@ -267,28 +289,6 @@ const translations = {
       copyright: "© 2026 Крема Флора. Все права защищены.",
     },
   },
-};
-
-// Brand Colors from logo
-const COLORS = {
-  teal: "#2A6B6B",
-  orange: "#E86A33",
-  yellow: "#F5C542",
-  cream: "#FFF9F0",
-  white: "#FFFFFF",
-};
-
-// Logo image
-const logoImage = require("./assets/logo.png");
-
-// Cake images
-const cakeImages = {
-  vanilla: require("./assets/cakes/stardart-busquite.png"),
-  chocolate: require("./assets/cakes/cocoa.png"),
-  strawberry: require("./assets/cakes/mac-strawberry.png"),
-  caramel: require("./assets/cakes/nejnost.png"),
-  lemon: require("./assets/cakes/limon.png"),
-  redVelvet: require("./assets/cakes/red-welwet.png"),
 };
 
 // Language Switcher Component
