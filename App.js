@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Platform,
+  Image,
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -21,31 +22,8 @@ const COLORS = {
   white: "#FFFFFF",
 };
 
-// Logo SVG as a component (simplified representation)
-const Logo = ({ size = 120 }) => {
-  const scale = size / 120;
-  return (
-    <View style={[styles.logoContainer, { width: size, height: size }]}>
-      {/* Center bean shape */}
-      <View
-        style={[
-          styles.logoCenter,
-          { width: 20 * scale, height: 25 * scale, borderRadius: 10 * scale },
-        ]}
-      />
-      {/* Petals */}
-      <View style={[styles.logoPetal, styles.petalTop, { transform: [{ scale }] }]} />
-      <View style={[styles.logoPetal, styles.petalBottom, { transform: [{ scale }] }]} />
-      <View style={[styles.logoPetalSide, styles.petalLeft, { transform: [{ scale }] }]} />
-      <View style={[styles.logoPetalSide, styles.petalRight, { transform: [{ scale }] }]} />
-      {/* Decorative curves */}
-      <View style={[styles.curveOuter, styles.curveTopLeft, { borderColor: COLORS.yellow }]} />
-      <View style={[styles.curveOuter, styles.curveTopRight, { borderColor: COLORS.yellow }]} />
-      <View style={[styles.curveOuter, styles.curveBottomLeft, { borderColor: COLORS.yellow }]} />
-      <View style={[styles.curveOuter, styles.curveBottomRight, { borderColor: COLORS.yellow }]} />
-    </View>
-  );
-};
+// Logo image
+const logoImage = require("./assets/logo.png");
 
 // Animated Floating Component
 const FloatingElement = ({ children, delay = 0, duration = 3000 }) => {
@@ -136,7 +114,6 @@ const CakeCard = ({ name, description, price, delay }) => {
         <Animated.View
           style={[styles.cakeCard, { transform: [{ scale: scaleAnim }] }]}
         >
-          {/* Placeholder for cake image */}
           <View style={styles.cakeImagePlaceholder}>
             <View style={styles.placeholderIcon}>
               <Text style={styles.placeholderEmoji}>🎂</Text>
@@ -204,7 +181,6 @@ const cakes = [
 export default function App() {
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  // Parallax effect for hero
   const heroTranslateY = scrollY.interpolate({
     inputRange: [0, 300],
     outputRange: [0, 100],
@@ -238,19 +214,12 @@ export default function App() {
           ]}
         >
           <FloatingElement delay={0} duration={4000}>
-            <Logo size={140} />
+            <Image
+              source={logoImage}
+              style={styles.heroLogo}
+              resizeMode="contain"
+            />
           </FloatingElement>
-
-          <FadeIn delay={300}>
-            <View style={styles.brandNameContainer}>
-              <Text style={styles.brandNameCrema}>Crema</Text>
-              <Text style={styles.brandNameFlora}>Flora</Text>
-            </View>
-          </FadeIn>
-
-          <FadeIn delay={500}>
-            <Text style={styles.tagline}>• By Lucy •</Text>
-          </FadeIn>
 
           <FadeIn delay={700}>
             <Text style={styles.heroSubtitle}>
@@ -270,7 +239,6 @@ export default function App() {
             </Text>
           </FadeIn>
 
-          {/* Decorative Elements */}
           <View style={styles.decorativeElements}>
             <FloatingElement delay={200} duration={3500}>
               <View style={[styles.decorativeCircle, { backgroundColor: COLORS.yellow }]} />
@@ -344,9 +312,11 @@ export default function App() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Logo size={60} />
-          <Text style={styles.footerBrand}>Crema Flora</Text>
-          <Text style={styles.footerTagline}>By Lucy</Text>
+          <Image
+            source={logoImage}
+            style={styles.footerLogo}
+            resizeMode="contain"
+          />
           <View style={styles.footerDivider} />
           <Text style={styles.footerText}>Made with love in every layer</Text>
           <Text style={styles.footerCopyright}>© 2026 Crema Flora. All rights reserved.</Text>
@@ -364,84 +334,14 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-
-  // Logo Styles
-  logoContainer: {
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
+  heroLogo: {
+    width: 300,
+    height: 300,
   },
-  logoCenter: {
-    backgroundColor: COLORS.orange,
-    position: "absolute",
+  footerLogo: {
+    width: 150,
+    height: 150,
   },
-  logoPetal: {
-    position: "absolute",
-    width: 12,
-    height: 35,
-    backgroundColor: COLORS.orange,
-    borderRadius: 6,
-  },
-  petalTop: {
-    top: 15,
-  },
-  petalBottom: {
-    bottom: 15,
-  },
-  logoPetalSide: {
-    position: "absolute",
-    width: 50,
-    height: 35,
-    backgroundColor: COLORS.yellow,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-  },
-  petalLeft: {
-    left: 5,
-    transform: [{ rotate: "-15deg" }],
-  },
-  petalRight: {
-    right: 5,
-    transform: [{ rotate: "15deg" }, { scaleX: -1 }],
-  },
-  curveOuter: {
-    position: "absolute",
-    width: 30,
-    height: 30,
-    borderWidth: 3,
-    borderColor: "transparent",
-    borderRadius: 15,
-  },
-  curveTopLeft: {
-    top: 20,
-    left: 10,
-    borderTopColor: COLORS.yellow,
-    borderLeftColor: COLORS.yellow,
-    transform: [{ rotate: "-45deg" }],
-  },
-  curveTopRight: {
-    top: 20,
-    right: 10,
-    borderTopColor: COLORS.yellow,
-    borderRightColor: COLORS.yellow,
-    transform: [{ rotate: "45deg" }],
-  },
-  curveBottomLeft: {
-    bottom: 20,
-    left: 10,
-    borderBottomColor: COLORS.yellow,
-    borderLeftColor: COLORS.yellow,
-    transform: [{ rotate: "45deg" }],
-  },
-  curveBottomRight: {
-    bottom: 20,
-    right: 10,
-    borderBottomColor: COLORS.yellow,
-    borderRightColor: COLORS.yellow,
-    transform: [{ rotate: "-45deg" }],
-  },
-
-  // Hero Section
   heroSection: {
     minHeight: 700,
     paddingTop: Platform.OS === "web" ? 80 : 100,
@@ -451,32 +351,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cream,
     position: "relative",
     overflow: "hidden",
-  },
-  brandNameContainer: {
-    flexDirection: "row",
-    marginTop: 30,
-    alignItems: "baseline",
-  },
-  brandNameCrema: {
-    fontSize: 48,
-    fontWeight: "300",
-    color: COLORS.teal,
-    fontStyle: "italic",
-    letterSpacing: 2,
-  },
-  brandNameFlora: {
-    fontSize: 48,
-    fontWeight: "300",
-    color: COLORS.orange,
-    fontStyle: "italic",
-    marginLeft: 10,
-    letterSpacing: 2,
-  },
-  tagline: {
-    fontSize: 18,
-    color: COLORS.teal,
-    marginTop: 10,
-    letterSpacing: 3,
   },
   heroSubtitle: {
     fontSize: 22,
@@ -524,8 +398,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-
-  // Cakes Section
   cakesSection: {
     backgroundColor: COLORS.white,
     paddingVertical: 60,
@@ -619,8 +491,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.orange,
   },
-
-  // Order Section
   orderSection: {
     backgroundColor: COLORS.teal,
     paddingVertical: 70,
@@ -691,25 +561,11 @@ const styles = StyleSheet.create({
     color: COLORS.teal,
     letterSpacing: 1,
   },
-
-  // Footer
   footer: {
     backgroundColor: COLORS.cream,
     paddingVertical: 50,
     paddingHorizontal: 30,
     alignItems: "center",
-  },
-  footerBrand: {
-    fontSize: 24,
-    color: COLORS.teal,
-    marginTop: 15,
-    fontStyle: "italic",
-  },
-  footerTagline: {
-    fontSize: 14,
-    color: COLORS.teal,
-    opacity: 0.7,
-    marginTop: 5,
   },
   footerDivider: {
     width: 40,
