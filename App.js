@@ -34,31 +34,37 @@ const translations = {
           name: "Classic Vanilla Dream",
           description: "Light and fluffy vanilla sponge with silky buttercream frosting",
           price: "$45",
+          image: cakeImages.vanilla,
         },
         {
           name: "Chocolate Paradise",
           description: "Rich dark chocolate layers with ganache and chocolate shavings",
           price: "$55",
+          image: cakeImages.chocolate,
         },
         {
           name: "Strawberry Bliss",
           description: "Fresh strawberries with cream cheese frosting on vanilla base",
           price: "$50",
+          image: cakeImages.strawberry,
         },
         {
           name: "Caramel Delight",
           description: "Salted caramel drizzle over moist caramel cake layers",
           price: "$52",
+          image: cakeImages.caramel,
         },
         {
           name: "Lemon Zest",
           description: "Tangy lemon curd filling with light meringue frosting",
           price: "$48",
+          image: cakeImages.lemon,
         },
         {
           name: "Red Velvet Romance",
           description: "Classic red velvet with cream cheese frosting and white chocolate",
           price: "$58",
+          image: cakeImages.redVelvet,
         },
       ],
     },
@@ -112,31 +118,37 @@ const translations = {
           name: "Դասական Վանիլային Երազանք",
           description: "Թեթև և փափուկ վանիլային բիսկվիտ՝ մետաքսային կարագի կրեմով",
           price: "$45",
+          image: cakeImages.vanilla,
         },
         {
           name: "Շոկոլադե Դրախտ",
           description: "Հարուստ մուգ շոկոլադե շերտեր՝ գանաշով և շոկոլադե սայրուկներով",
           price: "$55",
+          image: cakeImages.chocolate,
         },
         {
           name: "Ելակային Երանություն",
           description: "Թարմ ելակներ՝ քրեմ-պանրի կրեմով վանիլային բազայի վրա",
           price: "$50",
+          image: cakeImages.strawberry,
         },
         {
           name: "Կարամելային Հաճույք",
           description: "Աղի կարամելային մրգախառնուրդ՝ խոնավ կարամելային շերտերի վրա",
           price: "$52",
+          image: cakeImages.caramel,
         },
         {
           name: "Լիմոնի Համ",
           description: "Թթու լիմոնի կրեմ՝ թեթև բեզեի կրեմով",
           price: "$48",
+          image: cakeImages.lemon,
         },
         {
           name: "Կարմիր Թավշյա Ռոմանտիկա",
           description: "Դասական կարմիր թավշ՝ քրեմ-պանրի կրեմով և սպիտակ շոկոլադով",
           price: "$58",
+          image: cakeImages.redVelvet,
         },
       ],
     },
@@ -190,31 +202,37 @@ const translations = {
           name: "Классическая Ванильная Мечта",
           description: "Легкий и пушистый ванильный бисквит с шелковистым масляным кремом",
           price: "$45",
+          image: cakeImages.vanilla,
         },
         {
           name: "Шоколадный Рай",
           description: "Насыщенные слои темного шоколада с ганашем и шоколадной стружкой",
           price: "$55",
+          image: cakeImages.chocolate,
         },
         {
           name: "Клубничное Блаженство",
           description: "Свежая клубника со сливочно-сырным кремом на ванильной основе",
           price: "$50",
+          image: cakeImages.strawberry,
         },
         {
           name: "Карамельное Наслаждение",
           description: "Соленая карамель на влажных карамельных коржах",
           price: "$52",
+          image: cakeImages.caramel,
         },
         {
           name: "Лимонная Свежесть",
           description: "Терпкий лимонный крем с легкой меренгой",
           price: "$48",
+          image: cakeImages.lemon,
         },
         {
           name: "Романтика Красного Бархата",
           description: "Классический красный бархат со сливочно-сырным кремом и белым шоколадом",
           price: "$58",
+          image: cakeImages.redVelvet,
         },
       ],
     },
@@ -262,6 +280,16 @@ const COLORS = {
 
 // Logo image
 const logoImage = require("./assets/logo.png");
+
+// Cake images
+const cakeImages = {
+  vanilla: require("./assets/cakes/stardart-busquite.png"),
+  chocolate: require("./assets/cakes/cocoa.png"),
+  strawberry: require("./assets/cakes/mac-strawberry.png"),
+  caramel: require("./assets/cakes/nejnost.png"),
+  lemon: require("./assets/cakes/limon.png"),
+  redVelvet: require("./assets/cakes/red-welwet.png"),
+};
 
 // Language Switcher Component
 const LanguageSwitcher = ({ currentLang, onLanguageChange }) => {
@@ -500,7 +528,7 @@ const FadeIn = ({ children, delay = 0, style }) => {
 };
 
 // Cake Card Component
-const CakeCard = ({ name, description, price, delay }) => {
+const CakeCard = ({ name, description, price, image, delay }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -528,12 +556,11 @@ const CakeCard = ({ name, description, price, delay }) => {
         <Animated.View
           style={[styles.cakeCard, { transform: [{ scale: scaleAnim }] }]}
         >
-          <View style={styles.cakeImagePlaceholder}>
-            <View style={styles.placeholderIcon}>
-              <Text style={styles.placeholderEmoji}>🎂</Text>
-            </View>
-            <Text style={styles.placeholderText}>Image Coming Soon</Text>
-          </View>
+          <Image
+            source={image}
+            style={styles.cakeImage}
+            resizeMode="cover"
+          />
           <View style={styles.cakeInfo}>
             <Text style={styles.cakeName}>{name}</Text>
             <Text style={styles.cakeDescription}>{description}</Text>
@@ -683,6 +710,7 @@ export default function App() {
                 name={cake.name}
                 description={cake.description}
                 price={cake.price}
+                image={cake.image}
                 delay={300 + index * 100}
               />
             ))}
@@ -995,30 +1023,9 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  cakeImagePlaceholder: {
-    height: 200,
-    backgroundColor: COLORS.teal,
-    justifyContent: "center",
-    alignItems: "center",
-    opacity: 0.9,
-  },
-  placeholderIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  placeholderEmoji: {
-    fontSize: 30,
-  },
-  placeholderText: {
-    color: COLORS.white,
-    fontSize: 14,
-    opacity: 0.8,
-    letterSpacing: 1,
+  cakeImage: {
+    width: "100%",
+    height: 240,
   },
   cakeInfo: {
     padding: 25,
