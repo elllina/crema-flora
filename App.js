@@ -403,19 +403,19 @@ const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
         ]}
       >
         <View style={styles.headerContent}>
-          {/* Brand */}
+          {/* Brand with Logo */}
           <TouchableOpacity
             style={styles.brand}
             onPress={() => onNavigate("home")}
           >
-            <View style={styles.brandMark}>
-              <Text style={styles.brandMarkIcon}>🎂</Text>
-            </View>
-            <View>
-              <Text style={styles.brandName}>
-                CREMA <Text style={styles.brandNameItalic}>flora</Text>
-              </Text>
-            </View>
+            <Image
+              source={logoImage}
+              style={styles.headerLogoImage}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandName}>
+              CREMA <Text style={styles.brandNameItalic}>flora</Text>
+            </Text>
           </TouchableOpacity>
 
           {/* Desktop Menu */}
@@ -651,9 +651,15 @@ export default function App() {
         scrollEventThrottle={16}
       >
         {/* Hero Section - Elegant Design */}
-        <View
+        <Animated.View
           ref={(ref) => (sectionRefs.current.home = ref)}
-          style={styles.heroSection}
+          style={[
+            styles.heroSection,
+            {
+              transform: [{ translateY: heroTranslateY }],
+              opacity: heroOpacity,
+            },
+          ]}
         >
           {/* Decorative leaf flourish */}
           <FadeIn delay={300}>
@@ -661,25 +667,6 @@ export default function App() {
               <Text style={styles.leafIcon}>🌿</Text>
             </View>
           </FadeIn>
-
-          {/* Hero Logo */}
-          <Animated.View
-            style={[
-              styles.heroLogoContainer,
-              {
-                transform: [{ translateY: heroTranslateY }],
-                opacity: heroOpacity,
-              },
-            ]}
-          >
-            <FloatingElement delay={0} duration={4000}>
-              <Image
-                source={logoImage}
-                style={styles.heroLogo}
-                resizeMode="contain"
-              />
-            </FloatingElement>
-          </Animated.View>
 
           {/* Display Title */}
           <FadeIn delay={600}>
@@ -827,23 +814,14 @@ const styles = StyleSheet.create({
   brand: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
+    gap: 12,
   },
-  brandMark: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    borderWidth: 1,
-    borderColor: COLORS.teal,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: COLORS.white + "40",
-  },
-  brandMarkIcon: {
-    fontSize: 22,
+  headerLogoImage: {
+    width: 50,
+    height: 50,
   },
   brandName: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "500",
     letterSpacing: 3.5,
     color: COLORS.teal,
@@ -1021,7 +999,7 @@ const styles = StyleSheet.create({
   // Hero Section - Elegant Design
   heroSection: {
     minHeight: Platform.OS === "web" ? "calc(100vh - 92px)" : 700,
-    paddingTop: Platform.OS === "web" ? 140 : 160,
+    paddingTop: Platform.OS === "web" ? 180 : 200,
     paddingBottom: 80,
     paddingHorizontal: width > 768 ? 60 : 30,
     alignItems: "center",
@@ -1030,18 +1008,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   leafFlourish: {
-    marginBottom: 18,
+    marginBottom: 32,
   },
   leafIcon: {
-    fontSize: 64,
+    fontSize: 72,
     opacity: 0.85,
-  },
-  heroLogoContainer: {
-    marginBottom: 20,
-  },
-  heroLogo: {
-    width: 280,
-    height: 280,
   },
   displayTitle: {
     fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
