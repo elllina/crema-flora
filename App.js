@@ -403,7 +403,7 @@ const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
         ]}
       >
         <View style={styles.headerContent}>
-          {/* Brand with Logo */}
+          {/* Brand with Logo Only */}
           <TouchableOpacity
             style={styles.brand}
             onPress={() => onNavigate("home")}
@@ -413,9 +413,6 @@ const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
               style={styles.headerLogoImage}
               resizeMode="contain"
             />
-            <Text style={styles.brandName}>
-              CREMA <Text style={styles.brandNameItalic}>flora</Text>
-            </Text>
           </TouchableOpacity>
 
           {/* Desktop Menu */}
@@ -882,22 +879,10 @@ const styles = StyleSheet.create({
   brand: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
   },
   headerLogoImage: {
-    width: 50,
-    height: 50,
-  },
-  brandName: {
-    fontSize: 20,
-    fontWeight: "500",
-    letterSpacing: 3.5,
-    color: COLORS.teal,
-  },
-  brandNameItalic: {
-    fontStyle: "italic",
-    color: COLORS.orange,
-    fontWeight: "500",
+    width: 60,
+    height: 60,
   },
   headerNav: {
     flexDirection: "row",
@@ -1067,6 +1052,7 @@ const styles = StyleSheet.create({
   // Hero Section - 3 Column Layout
   heroSection: {
     minHeight: Platform.OS === "web" ? "calc(100vh - 92px)" : 700,
+    marginTop: Platform.OS === "web" ? 92 : 120,
     flexDirection: width > 1100 ? "row" : "column",
     alignItems: "stretch",
     backgroundColor: COLORS.cream,
@@ -1081,7 +1067,7 @@ const styles = StyleSheet.create({
   },
   plateA: {
     position: "absolute",
-    top: 0,
+    top: 40,
     left: -40,
     width: 340,
     height: 300,
@@ -1102,7 +1088,7 @@ const styles = StyleSheet.create({
   },
   plateB: {
     position: "absolute",
-    top: 200,
+    top: 240,
     left: 90,
     width: 380,
     height: 480,
@@ -1148,11 +1134,12 @@ const styles = StyleSheet.create({
     flex: 1.2,
     position: "relative",
     minHeight: 600,
+    paddingVertical: 60,
   },
   featureImage: {
     position: "absolute",
-    top: 0,
-    bottom: 0,
+    top: 80,
+    bottom: 100,
     left: 0,
     right: -40,
     borderRadius: 8,
