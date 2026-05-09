@@ -16,10 +16,15 @@ const { width } = Dimensions.get("window");
 // Brand Colors from logo
 const COLORS = {
   teal: "#2A6B6B",
+  tealSoft: "#3A7B7B",
   orange: "#E86A33",
+  orangeSoft: "#F08050",
   yellow: "#F5C542",
   cream: "#FFF9F0",
+  creamDark: "#F5E8D5",
   white: "#FFFFFF",
+  ink: "#1A1410",
+  inkSoft: "#2B231C",
 };
 
 // Logo image
@@ -361,21 +366,14 @@ const LanguageSwitcher = ({ currentLang, onLanguageChange }) => {
   );
 };
 
-// Header Component
+// Header Component with Elegant Design
 const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const t = translations[currentLang];
 
   const headerBg = scrollY.interpolate({
     inputRange: [0, 100],
     outputRange: ["rgba(255, 249, 240, 0)", "rgba(255, 249, 240, 0.98)"],
-    extrapolate: "clamp",
-  });
-
-  const headerShadow = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [0, 0.15],
     extrapolate: "clamp",
   });
 
@@ -386,84 +384,95 @@ const Header = ({ onNavigate, currentLang, onLanguageChange, scrollY }) => {
   ];
 
   return (
-    <Animated.View
-      style={[
-        styles.header,
-        {
-          backgroundColor: headerBg,
-          ...Platform.select({
-            web: {
-              boxShadow: headerShadow.interpolate({
-                inputRange: [0, 1],
-                outputRange: [
-                  "0 0 0 rgba(42, 107, 107, 0)",
-                  "0 2px 20px rgba(42, 107, 107, 0.15)",
-                ],
-              }),
-            },
-            default: {
-              shadowColor: COLORS.teal,
-              shadowOpacity: headerShadow,
-              shadowOffset: { width: 0, height: 2 },
-              shadowRadius: 10,
-              elevation: headerShadow.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 5],
-              }),
-            },
-          }),
-        },
-      ]}
-    >
-      <View style={styles.headerContent}>
-        <TouchableOpacity onPress={() => onNavigate("home")}>
-          <Text style={styles.headerLogo}>Crema Flora</Text>
-        </TouchableOpacity>
+    <>
+      {/* Top accent line */}
+      <View style={styles.topRule} />
 
-        {width > 768 ? (
-          <View style={styles.headerNav}>
+      <Animated.View
+        style={[
+          styles.header,
+          {
+            backgroundColor: headerBg,
+            borderBottomWidth: 1,
+            borderBottomColor: scrollY.interpolate({
+              inputRange: [0, 100],
+              outputRange: ["rgba(42, 107, 107, 0)", "rgba(42, 107, 107, 0.08)"],
+              extrapolate: "clamp",
+            }),
+          },
+        ]}
+      >
+        <View style={styles.headerContent}>
+          {/* Brand */}
+          <TouchableOpacity
+            style={styles.brand}
+            onPress={() => onNavigate("home")}
+          >
+            <View style={styles.brandMark}>
+              <Text style={styles.brandMarkIcon}>🎂</Text>
+            </View>
+            <View>
+              <Text style={styles.brandName}>
+                CREMA <Text style={styles.brandNameItalic}>flora</Text>
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Desktop Menu */}
+          {width > 768 && (
+            <View style={styles.headerNav}>
+              {menuItems.map((item, idx) => (
+                <TouchableOpacity
+                  key={item.key}
+                  style={styles.navItem}
+                  onPress={() => onNavigate(item.key)}
+                >
+                  <Text style={[styles.navText, idx === 0 && styles.navTextActive]}>
+                    {item.label}
+                  </Text>
+                  {idx === 0 && <View style={styles.navActiveBar} />}
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+
+          {/* Right side */}
+          <View style={styles.navRight}>
+            <LanguageSwitcher
+              currentLang={currentLang}
+              onLanguageChange={onLanguageChange}
+            />
+
+            {width <= 768 && (
+              <TouchableOpacity
+                style={styles.menuButton}
+                onPress={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Text style={styles.menuIcon}>{isMenuOpen ? "✕" : "☰"}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && width <= 768 && (
+          <View style={styles.mobileMenu}>
             {menuItems.map((item) => (
               <TouchableOpacity
                 key={item.key}
-                style={styles.navItem}
-                onPress={() => onNavigate(item.key)}
+                style={styles.mobileMenuItem}
+                onPress={() => {
+                  onNavigate(item.key);
+                  setIsMenuOpen(false);
+                }}
               >
-                <Text style={styles.navText}>{item.label}</Text>
+                <Text style={styles.mobileMenuText}>{item.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.menuButton}
-            onPress={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Text style={styles.menuIcon}>{isMenuOpen ? "✕" : "☰"}</Text>
-          </TouchableOpacity>
         )}
-
-        <LanguageSwitcher
-          currentLang={currentLang}
-          onLanguageChange={onLanguageChange}
-        />
-      </View>
-
-      {isMenuOpen && width <= 768 && (
-        <View style={styles.mobileMenu}>
-          {menuItems.map((item) => (
-            <TouchableOpacity
-              key={item.key}
-              style={styles.mobileMenuItem}
-              onPress={() => {
-                onNavigate(item.key);
-                setIsMenuOpen(false);
-              }}
-            >
-              <Text style={styles.mobileMenuText}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-    </Animated.View>
+      </Animated.View>
+    </>
   );
 };
 
@@ -641,57 +650,79 @@ export default function App() {
         )}
         scrollEventThrottle={16}
       >
-        {/* Hero Section */}
-        <Animated.View
+        {/* Hero Section - Elegant Design */}
+        <View
           ref={(ref) => (sectionRefs.current.home = ref)}
-          style={[
-            styles.heroSection,
-            {
-              transform: [{ translateY: heroTranslateY }],
-              opacity: heroOpacity,
-            },
-          ]}
+          style={styles.heroSection}
         >
-          <FloatingElement delay={0} duration={4000}>
-            <Image
-              source={logoImage}
-              style={styles.heroLogo}
-              resizeMode="contain"
-            />
-          </FloatingElement>
+          {/* Decorative leaf flourish */}
+          <FadeIn delay={300}>
+            <View style={styles.leafFlourish}>
+              <Text style={styles.leafIcon}>🌿</Text>
+            </View>
+          </FadeIn>
 
-          <FadeIn delay={700}>
+          {/* Hero Logo */}
+          <Animated.View
+            style={[
+              styles.heroLogoContainer,
+              {
+                transform: [{ translateY: heroTranslateY }],
+                opacity: heroOpacity,
+              },
+            ]}
+          >
+            <FloatingElement delay={0} duration={4000}>
+              <Image
+                source={logoImage}
+                style={styles.heroLogo}
+                resizeMode="contain"
+              />
+            </FloatingElement>
+          </Animated.View>
+
+          {/* Display Title */}
+          <FadeIn delay={600}>
+            <Text style={styles.displayTitle}>
+              Artisan{"\n"}
+              <Text style={styles.displayTitleScript}>Cakes</Text> &{"\n"}
+              <Text style={styles.displayTitleScript}>Sweeties</Text>
+            </Text>
+          </FadeIn>
+
+          {/* Subtitle */}
+          <FadeIn delay={800}>
             <Text style={styles.heroSubtitle}>{t.hero.subtitle}</Text>
           </FadeIn>
 
-          <FadeIn delay={900}>
-            <View style={styles.decorativeLine} />
+          {/* Decorative divider */}
+          <FadeIn delay={1000}>
+            <View style={styles.heroDivider}>
+              <View style={styles.heroDividerLine} />
+              <Text style={styles.heroDividerDot}>✦</Text>
+              <View style={styles.heroDividerLine} />
+            </View>
           </FadeIn>
 
-          <FadeIn delay={1100}>
+          {/* Description */}
+          <FadeIn delay={1200}>
             <Text style={styles.heroDescription}>{t.hero.description}</Text>
           </FadeIn>
 
-          <View style={styles.decorativeElements}>
-            <FloatingElement delay={200} duration={3500}>
-              <View
-                style={[
-                  styles.decorativeCircle,
-                  { backgroundColor: COLORS.yellow },
-                ]}
-              />
-            </FloatingElement>
-            <FloatingElement delay={400} duration={4500}>
-              <View
-                style={[
-                  styles.decorativeCircle,
-                  styles.circleRight,
-                  { backgroundColor: COLORS.orange },
-                ]}
-              />
-            </FloatingElement>
-          </View>
-        </Animated.View>
+          {/* CTA Button */}
+          <FadeIn delay={1400}>
+            <TouchableOpacity
+              style={styles.heroButton}
+              onPress={() => onNavigate("cakes")}
+            >
+              <Text style={styles.heroButtonText}>Discover Our Menu</Text>
+              <View style={styles.heroButtonCorner} />
+            </TouchableOpacity>
+          </FadeIn>
+
+          {/* Decorative gold flake */}
+          <View style={styles.goldFlake} />
+        </View>
 
         {/* Cakes Section */}
         <View
@@ -772,10 +803,15 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  // Header Styles
+  // Top accent rule
+  topRule: {
+    height: 3,
+    backgroundColor: COLORS.orange,
+  },
+  // Header Styles - Elegant
   header: {
     position: Platform.OS === "web" ? "fixed" : "absolute",
-    top: 0,
+    top: 3,
     left: 0,
     right: 0,
     zIndex: 1000,
@@ -785,35 +821,97 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingHorizontal: width > 768 ? 56 : 24,
+    paddingVertical: 22,
   },
-  headerLogo: {
-    fontSize: 24,
-    fontWeight: "700",
+  brand: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+  },
+  brandMark: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.white + "40",
+  },
+  brandMarkIcon: {
+    fontSize: 22,
+  },
+  brandName: {
+    fontSize: 22,
+    fontWeight: "500",
+    letterSpacing: 3.5,
     color: COLORS.teal,
-    letterSpacing: 1,
+  },
+  brandNameItalic: {
+    fontStyle: "italic",
+    color: COLORS.orange,
+    fontWeight: "500",
   },
   headerNav: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 30,
+    gap: 42,
+    position: "absolute",
+    left: "50%",
+    transform: [{ translateX: -100 }],
   },
   navItem: {
-    paddingVertical: 8,
-    paddingHorizontal: 5,
+    paddingVertical: 10,
+    position: "relative",
   },
   navText: {
-    fontSize: 16,
-    color: COLORS.teal,
+    fontSize: 11,
+    color: COLORS.inkSoft,
     fontWeight: "500",
-    letterSpacing: 0.5,
+    letterSpacing: 2.6,
+    textTransform: "uppercase",
+  },
+  navTextActive: {
+    color: COLORS.teal,
+  },
+  navActiveBar: {
+    position: "absolute",
+    bottom: 2,
+    left: 0,
+    right: 0,
+    height: 1.5,
+    backgroundColor: COLORS.orange,
+  },
+  navRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
   },
   menuButton: {
-    padding: 10,
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.teal + "15",
+    alignItems: "center",
+    justifyContent: "center",
+    ...Platform.select({
+      web: {
+        boxShadow: "0 6px 18px rgba(42, 107, 107, 0.12)",
+      },
+      default: {
+        shadowColor: COLORS.teal,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.12,
+        shadowRadius: 9,
+        elevation: 4,
+      },
+    }),
   },
   menuIcon: {
-    fontSize: 24,
+    fontSize: 18,
     color: COLORS.teal,
   },
   mobileMenu: {
@@ -821,17 +919,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderTopWidth: 1,
-    borderTopColor: COLORS.teal + "20",
+    borderTopColor: COLORS.teal + "15",
   },
   mobileMenuItem: {
     paddingVertical: 15,
   },
   mobileMenuText: {
-    fontSize: 16,
+    fontSize: 13,
     color: COLORS.teal,
     fontWeight: "500",
+    letterSpacing: 2,
+    textTransform: "uppercase",
   },
-  // Language Switcher Styles
+  // Language Switcher Styles - Elegant
   languageSwitcher: {
     position: "relative",
     zIndex: 2000,
@@ -839,142 +939,202 @@ const styles = StyleSheet.create({
   languageButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: COLORS.teal,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 25,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 23,
+    borderWidth: 1,
+    borderColor: COLORS.teal + "15",
     gap: 6,
     ...Platform.select({
       web: {
-        boxShadow: "0 2px 10px rgba(42, 107, 107, 0.2)",
+        boxShadow: "0 6px 18px rgba(42, 107, 107, 0.12)",
       },
       default: {
         shadowColor: COLORS.teal,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        elevation: 3,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.12,
+        shadowRadius: 9,
+        elevation: 4,
       },
     }),
   },
   languageFlag: {
-    fontSize: 18,
+    fontSize: 16,
   },
   languageLabel: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: "600",
-    color: COLORS.white,
-    letterSpacing: 0.5,
+    color: COLORS.teal,
+    letterSpacing: 1.5,
   },
   languageArrow: {
-    fontSize: 10,
-    color: COLORS.white,
+    fontSize: 9,
+    color: COLORS.teal,
+    opacity: 0.6,
   },
   languageDropdown: {
     position: "absolute",
-    top: 50,
+    top: 56,
     right: 0,
     backgroundColor: COLORS.white,
-    borderRadius: 15,
+    borderRadius: 12,
     overflow: "hidden",
-    minWidth: 120,
+    minWidth: 130,
+    borderWidth: 1,
+    borderColor: COLORS.teal + "10",
     ...Platform.select({
       web: {
-        boxShadow: "0 4px 20px rgba(42, 107, 107, 0.25)",
+        boxShadow: "0 8px 24px rgba(42, 107, 107, 0.18)",
       },
       default: {
         shadowColor: COLORS.teal,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-        elevation: 8,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.18,
+        shadowRadius: 12,
+        elevation: 10,
       },
     }),
   },
   languageOption: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
     gap: 10,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.teal + "10",
+    borderBottomColor: COLORS.teal + "08",
   },
   languageOptionActive: {
-    backgroundColor: COLORS.teal + "10",
+    backgroundColor: COLORS.orange + "12",
   },
   languageOptionLabel: {
-    fontSize: 14,
+    fontSize: 11,
     color: COLORS.teal,
     fontWeight: "500",
+    letterSpacing: 1.5,
   },
   languageOptionLabelActive: {
     fontWeight: "700",
-    color: COLORS.teal,
+    color: COLORS.orange,
   },
-  heroLogo: {
-    width: 300,
-    height: 300,
-  },
-  footerLogo: {
-    width: 150,
-    height: 150,
-  },
+  // Hero Section - Elegant Design
   heroSection: {
-    minHeight: 700,
-    paddingTop: Platform.OS === "web" ? 80 : 100,
-    paddingBottom: 60,
-    paddingHorizontal: 30,
+    minHeight: Platform.OS === "web" ? "calc(100vh - 92px)" : 700,
+    paddingTop: Platform.OS === "web" ? 140 : 160,
+    paddingBottom: 80,
+    paddingHorizontal: width > 768 ? 60 : 30,
     alignItems: "center",
     backgroundColor: COLORS.cream,
     position: "relative",
     overflow: "hidden",
   },
+  leafFlourish: {
+    marginBottom: 18,
+  },
+  leafIcon: {
+    fontSize: 64,
+    opacity: 0.85,
+  },
+  heroLogoContainer: {
+    marginBottom: 20,
+  },
+  heroLogo: {
+    width: 280,
+    height: 280,
+  },
+  displayTitle: {
+    fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
+    fontSize: width > 768 ? 86 : 52,
+    fontWeight: "400",
+    lineHeight: width > 768 ? 88 : 56,
+    letterSpacing: -0.5,
+    color: COLORS.teal,
+    textAlign: "center",
+    textTransform: "uppercase",
+    marginBottom: 24,
+  },
+  displayTitleScript: {
+    fontStyle: "italic",
+    fontSize: width > 768 ? 68 : 42,
+    color: COLORS.orange,
+    textTransform: "none",
+  },
   heroSubtitle: {
-    fontSize: 22,
-    color: COLORS.teal,
-    marginTop: 40,
+    fontSize: width > 768 ? 16 : 14,
+    color: COLORS.inkSoft,
     textAlign: "center",
-    fontWeight: "300",
-    letterSpacing: 1,
+    fontWeight: "400",
+    letterSpacing: 3,
+    textTransform: "uppercase",
+    opacity: 0.85,
+    marginBottom: 28,
   },
-  decorativeLine: {
-    width: 80,
-    height: 3,
+  heroDivider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    marginBottom: 28,
+  },
+  heroDividerLine: {
+    width: 40,
+    height: 1,
     backgroundColor: COLORS.orange,
-    marginTop: 25,
-    borderRadius: 2,
+    opacity: 0.6,
   },
-  heroDescription: {
-    fontSize: 16,
-    color: COLORS.teal,
-    textAlign: "center",
-    marginTop: 25,
-    lineHeight: 26,
-    maxWidth: 500,
+  heroDividerDot: {
+    fontSize: 12,
+    color: COLORS.orange,
     opacity: 0.8,
   },
-  decorativeElements: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    pointerEvents: "none",
+  heroDescription: {
+    fontSize: width > 768 ? 15 : 14,
+    color: COLORS.inkSoft,
+    textAlign: "center",
+    lineHeight: 26,
+    maxWidth: 520,
+    opacity: 0.75,
+    marginBottom: 42,
   },
-  decorativeCircle: {
-    position: "absolute",
-    width: 15,
-    height: 15,
-    borderRadius: 10,
-    opacity: 0.3,
-    top: 150,
-    left: 30,
+  heroButton: {
+    position: "relative",
+    borderWidth: 1,
+    borderColor: COLORS.orange,
+    paddingVertical: 18,
+    paddingHorizontal: 42,
+    backgroundColor: "transparent",
   },
-  circleRight: {
-    left: "auto",
-    right: 30,
-    top: 200,
-    width: 20,
-    height: 20,
+  heroButtonText: {
+    fontSize: 11,
+    letterSpacing: 3.2,
+    textTransform: "uppercase",
+    fontWeight: "500",
+    color: COLORS.teal,
+  },
+  heroButtonCorner: {
+    position: "absolute",
+    right: -6,
+    bottom: -6,
+    width: 14,
+    height: 14,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.orange,
+  },
+  goldFlake: {
+    position: "absolute",
+    right: "8%",
+    bottom: 40,
+    width: 90,
+    height: 72,
+    backgroundColor: COLORS.yellow,
+    opacity: 0.85,
+    transform: [{ rotate: "25deg" }],
+    borderRadius: 40,
+  },
+  footerLogo: {
+    width: 150,
+    height: 150,
   },
   cakesSection: {
     backgroundColor: COLORS.white,
