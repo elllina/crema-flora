@@ -650,65 +650,133 @@ export default function App() {
         )}
         scrollEventThrottle={16}
       >
-        {/* Hero Section - Elegant Design */}
-        <Animated.View
+        {/* Hero Section - 3 Column Layout with Images */}
+        <View
           ref={(ref) => (sectionRefs.current.home = ref)}
-          style={[
-            styles.heroSection,
-            {
-              transform: [{ translateY: heroTranslateY }],
-              opacity: heroOpacity,
-            },
-          ]}
+          style={styles.heroSection}
         >
-          {/* Decorative leaf flourish */}
-          <FadeIn delay={300}>
-            <View style={styles.leafFlourish}>
-              <Text style={styles.leafIcon}>🌿</Text>
+          {/* LEFT - Stacked Image Plates */}
+          {width > 1100 && (
+            <View style={styles.heroLeft}>
+              <Animated.View
+                style={[
+                  styles.plateA,
+                  {
+                    transform: [{ translateY: heroTranslateY.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, 20],
+                    })}],
+                  },
+                ]}
+              >
+                <Image
+                  source={cakeImages.chocolate}
+                  style={styles.plateImage}
+                  resizeMode="cover"
+                />
+              </Animated.View>
+              <Animated.View
+                style={[
+                  styles.plateB,
+                  {
+                    transform: [{ translateY: heroTranslateY.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, -15],
+                    })}],
+                  },
+                ]}
+              >
+                <Image
+                  source={cakeImages.strawberry}
+                  style={styles.plateImage}
+                  resizeMode="cover"
+                />
+              </Animated.View>
             </View>
-          </FadeIn>
+          )}
 
-          {/* Display Title */}
-          <FadeIn delay={600}>
-            <Text style={styles.displayTitle}>
-              Artisan{"\n"}
-              <Text style={styles.displayTitleScript}>Cakes</Text> &{"\n"}
-              <Text style={styles.displayTitleScript}>Sweeties</Text>
-            </Text>
-          </FadeIn>
+          {/* CENTER - Main Content */}
+          <Animated.View
+            style={[
+              styles.heroCenter,
+              {
+                opacity: heroOpacity,
+              },
+            ]}
+          >
+            {/* Decorative leaf flourish */}
+            <FadeIn delay={300}>
+              <View style={styles.leafFlourish}>
+                <Text style={styles.leafIcon}>🌿</Text>
+              </View>
+            </FadeIn>
 
-          {/* Subtitle */}
-          <FadeIn delay={800}>
-            <Text style={styles.heroSubtitle}>{t.hero.subtitle}</Text>
-          </FadeIn>
+            {/* Display Title */}
+            <FadeIn delay={600}>
+              <Text style={styles.displayTitle}>
+                Artisan{"\n"}
+                <Text style={styles.displayTitleScript}>Cakes</Text> &{"\n"}
+                <Text style={styles.displayTitleScript}>Sweeties</Text>
+              </Text>
+            </FadeIn>
 
-          {/* Decorative divider */}
-          <FadeIn delay={1000}>
-            <View style={styles.heroDivider}>
-              <View style={styles.heroDividerLine} />
-              <Text style={styles.heroDividerDot}>✦</Text>
-              <View style={styles.heroDividerLine} />
+            {/* Subtitle */}
+            <FadeIn delay={800}>
+              <Text style={styles.heroSubtitle}>{t.hero.subtitle}</Text>
+            </FadeIn>
+
+            {/* Decorative divider */}
+            <FadeIn delay={1000}>
+              <View style={styles.heroDivider}>
+                <View style={styles.heroDividerLine} />
+                <Text style={styles.heroDividerDot}>✦</Text>
+                <View style={styles.heroDividerLine} />
+              </View>
+            </FadeIn>
+
+            {/* Description */}
+            <FadeIn delay={1200}>
+              <Text style={styles.heroDescription}>{t.hero.description}</Text>
+            </FadeIn>
+
+            {/* CTA Button */}
+            <FadeIn delay={1400}>
+              <TouchableOpacity
+                style={styles.heroButton}
+                onPress={() => onNavigate("cakes")}
+              >
+                <Text style={styles.heroButtonText}>Discover Our Menu</Text>
+                <View style={styles.heroButtonCorner} />
+              </TouchableOpacity>
+            </FadeIn>
+
+            {/* Decorative gold flake */}
+            <View style={styles.goldFlake} />
+          </Animated.View>
+
+          {/* RIGHT - Feature Image */}
+          {width > 720 && (
+            <View style={styles.heroRight}>
+              <Animated.View
+                style={[
+                  styles.featureImage,
+                  {
+                    transform: [{ translateY: heroTranslateY.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, -10],
+                    })}],
+                  },
+                ]}
+              >
+                <Image
+                  source={cakeImages.redVelvet}
+                  style={styles.featureImageSource}
+                  resizeMode="cover"
+                />
+                <View style={styles.featureOverlay} />
+              </Animated.View>
             </View>
-          </FadeIn>
-
-          {/* Description */}
-          <FadeIn delay={1200}>
-            <Text style={styles.heroDescription}>{t.hero.description}</Text>
-          </FadeIn>
-
-          {/* CTA Button */}
-          <FadeIn delay={1400}>
-            <TouchableOpacity
-              style={styles.heroButton}
-              onPress={() => onNavigate("cakes")}
-            >
-              <Text style={styles.heroButtonText}>Discover Our Menu</Text>
-              <View style={styles.heroButtonCorner} />
-            </TouchableOpacity>
-          </FadeIn>
-
-          {/* Decorative gold flake */}
-          <View style={styles.goldFlake} />
+          )}
         </View>
 
         {/* Cakes Section */}
@@ -996,16 +1064,77 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: COLORS.orange,
   },
-  // Hero Section - Elegant Design
+  // Hero Section - 3 Column Layout
   heroSection: {
     minHeight: Platform.OS === "web" ? "calc(100vh - 92px)" : 700,
-    paddingTop: Platform.OS === "web" ? 180 : 200,
-    paddingBottom: 80,
-    paddingHorizontal: width > 768 ? 60 : 30,
-    alignItems: "center",
+    flexDirection: width > 1100 ? "row" : "column",
+    alignItems: "stretch",
     backgroundColor: COLORS.cream,
     position: "relative",
     overflow: "hidden",
+  },
+  // Left column - stacked images
+  heroLeft: {
+    flex: 1.05,
+    position: "relative",
+    minHeight: 600,
+  },
+  plateA: {
+    position: "absolute",
+    top: 0,
+    left: -40,
+    width: 340,
+    height: 300,
+    borderRadius: 8,
+    overflow: "hidden",
+    ...Platform.select({
+      web: {
+        boxShadow: "0 30px 60px -20px rgba(60, 30, 10, 0.35)",
+      },
+      default: {
+        shadowColor: "#3c1e0a",
+        shadowOffset: { width: 0, height: 30 },
+        shadowOpacity: 0.35,
+        shadowRadius: 40,
+        elevation: 15,
+      },
+    }),
+  },
+  plateB: {
+    position: "absolute",
+    top: 200,
+    left: 90,
+    width: 380,
+    height: 480,
+    borderRadius: 8,
+    borderWidth: 8,
+    borderColor: COLORS.white,
+    overflow: "hidden",
+    ...Platform.select({
+      web: {
+        boxShadow: "0 30px 60px -20px rgba(60, 30, 10, 0.35)",
+      },
+      default: {
+        shadowColor: "#3c1e0a",
+        shadowOffset: { width: 0, height: 30 },
+        shadowOpacity: 0.35,
+        shadowRadius: 40,
+        elevation: 15,
+      },
+    }),
+  },
+  plateImage: {
+    width: "100%",
+    height: "100%",
+  },
+  // Center column - main content
+  heroCenter: {
+    flex: 1.4,
+    paddingTop: Platform.OS === "web" ? 140 : 160,
+    paddingBottom: 80,
+    paddingHorizontal: width > 768 ? 40 : 30,
+    alignItems: "center",
+    justifyContent: "center",
   },
   leafFlourish: {
     marginBottom: 32,
@@ -1013,6 +1142,46 @@ const styles = StyleSheet.create({
   leafIcon: {
     fontSize: 72,
     opacity: 0.85,
+  },
+  // Right column - feature image
+  heroRight: {
+    flex: 1.2,
+    position: "relative",
+    minHeight: 600,
+  },
+  featureImage: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: -40,
+    borderRadius: 8,
+    overflow: "hidden",
+    ...Platform.select({
+      web: {
+        boxShadow: "-40px 30px 80px -30px rgba(60, 30, 10, 0.35) inset",
+      },
+      default: {
+        shadowColor: "#3c1e0a",
+        shadowOffset: { width: -20, height: 30 },
+        shadowOpacity: 0.35,
+        shadowRadius: 40,
+        elevation: 10,
+      },
+    }),
+  },
+  featureImageSource: {
+    width: "100%",
+    height: "100%",
+  },
+  featureOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: COLORS.teal,
+    opacity: 0.08,
   },
   displayTitle: {
     fontFamily: Platform.OS === "ios" ? "Georgia" : "serif",
