@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  Modal,
 } from "react-native";
 import gsap from "gsap";
+import CakeBuilder from "./CakeBuilder";
 
 const { width } = Dimensions.get("window");
 
@@ -690,6 +692,7 @@ const OrderStep = ({ number, title, description, delay }) => (
 
 export default function App() {
   const [language, setLanguage] = useState("en");
+  const [showCakeBuilder, setShowCakeBuilder] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef(null);
   const sectionRefs = useRef({
@@ -809,15 +812,23 @@ export default function App() {
               <Text style={styles.heroDescription}>{t.hero.description}</Text>
             </FadeIn>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <FadeIn delay={1400}>
-              <TouchableOpacity
-                style={styles.heroButton}
-                onPress={() => onNavigate("cakes")}
-              >
-                <Text style={styles.heroButtonText}>Discover Our Menu</Text>
-                <View style={styles.heroButtonCorner} />
-              </TouchableOpacity>
+              <View style={styles.heroButtons}>
+                <TouchableOpacity
+                  style={styles.heroButton}
+                  onPress={() => setShowCakeBuilder(true)}
+                >
+                  <Text style={styles.heroButtonText}>Build Your Cake</Text>
+                  <View style={styles.heroButtonCorner} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.heroButtonSecondary}
+                  onPress={() => handleNavigate("cakes")}
+                >
+                  <Text style={styles.heroButtonSecondaryText}>View Gallery</Text>
+                </TouchableOpacity>
+              </View>
             </FadeIn>
 
             {/* Decorative gold flake */}
@@ -902,6 +913,15 @@ export default function App() {
           <Text style={styles.footerCopyright}>{t.footer.copyright}</Text>
         </View>
       </Animated.ScrollView>
+
+      {/* Cake Builder Modal */}
+      <Modal
+        visible={showCakeBuilder}
+        animationType="slide"
+        presentationStyle="fullScreen"
+      >
+        <CakeBuilder onClose={() => setShowCakeBuilder(false)} />
+      </Modal>
     </View>
   );
 }
@@ -1282,15 +1302,35 @@ const styles = StyleSheet.create({
     opacity: 0.75,
     marginBottom: 42,
   },
+  heroButtons: {
+    flexDirection: width > 600 ? "row" : "column",
+    gap: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   heroButton: {
     position: "relative",
     borderWidth: 1,
     borderColor: COLORS.orange,
     paddingVertical: 18,
     paddingHorizontal: 42,
-    backgroundColor: "transparent",
+    backgroundColor: COLORS.orange,
   },
   heroButtonText: {
+    fontSize: 11,
+    letterSpacing: 3.2,
+    textTransform: "uppercase",
+    fontWeight: "500",
+    color: COLORS.white,
+  },
+  heroButtonSecondary: {
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    paddingVertical: 18,
+    paddingHorizontal: 42,
+    backgroundColor: "transparent",
+  },
+  heroButtonSecondaryText: {
     fontSize: 11,
     letterSpacing: 3.2,
     textTransform: "uppercase",
