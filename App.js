@@ -9,7 +9,10 @@ import {
   TouchableOpacity,
   Platform,
   Image,
+  Modal,
 } from "react-native";
+import gsap from "gsap";
+import CakeBuilder from "./CakeBuilder";
 
 const { width } = Dimensions.get("window");
 
@@ -294,6 +297,102 @@ const translations = {
       copyright: "© 2026 Крема Флора. Все права защищены.",
     },
   },
+};
+
+// Animated Image Plate Component with GSAP hover effect
+const AnimatedImagePlate = ({ source, style, delay = 0, direction = "up" }) => {
+  const imageRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === "web" && imageRef.current) {
+      const element = imageRef.current;
+
+      const handleMouseEnter = () => {
+        gsap.to(element, {
+          y: direction === "up" ? -15 : 15,
+          scale: 1.05,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(element, {
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+      };
+
+      element.addEventListener("mouseenter", handleMouseEnter);
+      element.addEventListener("mouseleave", handleMouseLeave);
+
+      return () => {
+        element.removeEventListener("mouseenter", handleMouseEnter);
+        element.removeEventListener("mouseleave", handleMouseLeave);
+      };
+    }
+  }, [direction]);
+
+  return (
+    <View ref={imageRef} style={style}>
+      <Image
+        source={source}
+        style={styles.plateImage}
+        resizeMode="cover"
+      />
+    </View>
+  );
+};
+
+// Animated Feature Image Component with GSAP hover effect
+const AnimatedFeatureImage = ({ source, style }) => {
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (Platform.OS === "web" && imageRef.current) {
+      const element = imageRef.current;
+
+      const handleMouseEnter = () => {
+        gsap.to(element, {
+          scale: 1.08,
+          x: -10,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(element, {
+          scale: 1,
+          x: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      };
+
+      element.addEventListener("mouseenter", handleMouseEnter);
+      element.addEventListener("mouseleave", handleMouseLeave);
+
+      return () => {
+        element.removeEventListener("mouseenter", handleMouseEnter);
+        element.removeEventListener("mouseleave", handleMouseLeave);
+      };
+    }
+  }, []);
+
+  return (
+    <View ref={imageRef} style={style}>
+      <Image
+        source={source}
+        style={styles.featureImageSource}
+        resizeMode="cover"
+      />
+      <View style={styles.featureOverlay} />
+    </View>
+  );
 };
 
 // Language Switcher Component
@@ -593,6 +692,7 @@ const OrderStep = ({ number, title, description, delay }) => (
 
 export default function App() {
   const [language, setLanguage] = useState("en");
+  const [showCakeBuilder, setShowCakeBuilder] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef(null);
   const sectionRefs = useRef({
@@ -652,43 +752,19 @@ export default function App() {
           ref={(ref) => (sectionRefs.current.home = ref)}
           style={styles.heroSection}
         >
-          {/* LEFT - Stacked Image Plates */}
+          {/* LEFT - Stacked Image Plates with Hover Animation */}
           {width > 1100 && (
             <View style={styles.heroLeft}>
-              <Animated.View
-                style={[
-                  styles.plateA,
-                  {
-                    transform: [{ translateY: heroTranslateY.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: [0, 20],
-                    })}],
-                  },
-                ]}
-              >
-                <Image
-                  source={cakeImages.chocolate}
-                  style={styles.plateImage}
-                  resizeMode="cover"
-                />
-              </Animated.View>
-              <Animated.View
-                style={[
-                  styles.plateB,
-                  {
-                    transform: [{ translateY: heroTranslateY.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: [0, -15],
-                    })}],
-                  },
-                ]}
-              >
-                <Image
-                  source={cakeImages.strawberry}
-                  style={styles.plateImage}
-                  resizeMode="cover"
-                />
-              </Animated.View>
+              <AnimatedImagePlate
+                source={cakeImages.chocolate}
+                style={styles.plateA}
+                direction="up"
+              />
+              <AnimatedImagePlate
+                source={cakeImages.strawberry}
+                style={styles.plateB}
+                direction="down"
+              />
             </View>
           )}
 
@@ -736,42 +812,36 @@ export default function App() {
               <Text style={styles.heroDescription}>{t.hero.description}</Text>
             </FadeIn>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <FadeIn delay={1400}>
-              <TouchableOpacity
-                style={styles.heroButton}
-                onPress={() => onNavigate("cakes")}
-              >
-                <Text style={styles.heroButtonText}>Discover Our Menu</Text>
-                <View style={styles.heroButtonCorner} />
-              </TouchableOpacity>
+              <View style={styles.heroButtons}>
+                <TouchableOpacity
+                  style={styles.heroButton}
+                  onPress={() => setShowCakeBuilder(true)}
+                >
+                  <Text style={styles.heroButtonText}>Build Your Cake</Text>
+                  <View style={styles.heroButtonCorner} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.heroButtonSecondary}
+                  onPress={() => handleNavigate("cakes")}
+                >
+                  <Text style={styles.heroButtonSecondaryText}>View Gallery</Text>
+                </TouchableOpacity>
+              </View>
             </FadeIn>
 
             {/* Decorative gold flake */}
             <View style={styles.goldFlake} />
           </Animated.View>
 
-          {/* RIGHT - Feature Image */}
+          {/* RIGHT - Feature Image with Hover Animation */}
           {width > 720 && (
             <View style={styles.heroRight}>
-              <Animated.View
-                style={[
-                  styles.featureImage,
-                  {
-                    transform: [{ translateY: heroTranslateY.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: [0, -10],
-                    })}],
-                  },
-                ]}
-              >
-                <Image
-                  source={cakeImages.redVelvet}
-                  style={styles.featureImageSource}
-                  resizeMode="cover"
-                />
-                <View style={styles.featureOverlay} />
-              </Animated.View>
+              <AnimatedFeatureImage
+                source={cakeImages.redVelvet}
+                style={styles.featureImage}
+              />
             </View>
           )}
         </View>
@@ -843,6 +913,15 @@ export default function App() {
           <Text style={styles.footerCopyright}>{t.footer.copyright}</Text>
         </View>
       </Animated.ScrollView>
+
+      {/* Cake Builder Modal */}
+      <Modal
+        visible={showCakeBuilder}
+        animationType="slide"
+        presentationStyle="fullScreen"
+      >
+        <CakeBuilder onClose={() => setShowCakeBuilder(false)} />
+      </Modal>
     </View>
   );
 }
@@ -1223,15 +1302,35 @@ const styles = StyleSheet.create({
     opacity: 0.75,
     marginBottom: 42,
   },
+  heroButtons: {
+    flexDirection: width > 600 ? "row" : "column",
+    gap: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   heroButton: {
     position: "relative",
     borderWidth: 1,
     borderColor: COLORS.orange,
     paddingVertical: 18,
     paddingHorizontal: 42,
-    backgroundColor: "transparent",
+    backgroundColor: COLORS.orange,
   },
   heroButtonText: {
+    fontSize: 11,
+    letterSpacing: 3.2,
+    textTransform: "uppercase",
+    fontWeight: "500",
+    color: COLORS.white,
+  },
+  heroButtonSecondary: {
+    borderWidth: 1,
+    borderColor: COLORS.teal,
+    paddingVertical: 18,
+    paddingHorizontal: 42,
+    backgroundColor: "transparent",
+  },
+  heroButtonSecondaryText: {
     fontSize: 11,
     letterSpacing: 3.2,
     textTransform: "uppercase",
